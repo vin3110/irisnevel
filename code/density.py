@@ -71,9 +71,21 @@ def density(xlen, ylen, position):
     area = xlen * ylen
     density = (len(position) / area) * 0.4310157882516833
 
+    if density > threshold:
+            plt.axhspan(x_begin,x_end, facecolor='g', alpha=0.5)
+
+            ##--onderstaande lijn is miss dubbel--##
+            plt.axvspan(y_begin, y_end, facecolor='g', alpha=0.5)
+    else:
+            plt.axhspan(x_begin,x_end, facecolor='r', alpha=0.5)
+
+            ##--onderstaande lijn is miss dubbel--##
+            plt.axvspan(y_begin, y_end, facecolor='r', alpha=0.5)
+
+            
     return density
 
-positions_list, densities = sectioning_and_starfind(data, 8)
+positions_list, densities = sectioning_and_starfind(data, 16)
 print(densities)
 
 
