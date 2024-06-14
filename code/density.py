@@ -9,7 +9,7 @@ from astropy.stats import sigma_clipped_stats
 from photutils.detection import DAOStarFinder
 from photutils.aperture import CircularAperture
 
-data_in ="/Users/ilias/OneDrive - UvA/Periode 6/Einddingentjes/L60s.fit"
+data_in ="/NGC7023/L60s.fit"
 
 hdu = fits.open(data_in)[0]
 header = hdu.header 
@@ -35,8 +35,18 @@ def positions(section):
     #         sources[col].info.format = '%.2f'
     # sources.pprint(max_width=76)
 
-    positions = np.transpose((sources['xcentroid'], sources['ycentroid']))
+    # if sources is not None:
+        # Probeer de xcentroid te krijgen
+        # print(len(sources['xcentroid']))
+    # else:
+        # Als de xcentroid niet bestaat, print een bericht en return None
+        # print('no stars found')
 
+    if sources is not None:
+        positions = np.transpose((sources['xcentroid'], sources['ycentroid']))
+    else:
+        positions = []
+    
     return positions
 
 
@@ -54,6 +64,13 @@ def sectioning_and_starfind(data, sqrt_of_parts):
             section = data[i*x:(i+1)*x, j*y:(j+1)*y]
             # print(i*x,(i+1)*x, j*y,(j+1)*y)
             position = positions(section)
+            
+            # for x in position:
+            #     print(position[x][0], position[x][1])
+            #     position[x][0] = position[x][0] + i*x
+            #     position[x][1] = position[x][1] + j*y
+            #     print(position[x][0], position[x][1])
+            
             positions_list.append(position)
             densities.append(density(x, y, position))
 
@@ -73,8 +90,10 @@ def density(xlen, ylen, position):
 
     return density
 
-positions_list, densities = sectioning_and_starfind(data, 8)
-print(densities)
+positions_list, densities = sectioning_and_starfind(data, 10)
+# print(densities)
+# print(len(densities))
+print(positions_list)
 
 
 # plt.plot(positions_list)
