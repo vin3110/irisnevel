@@ -9,6 +9,8 @@ from astropy.stats import sigma_clipped_stats
 from photutils.detection import DAOStarFinder
 from photutils.aperture import CircularAperture
 
+from scipy.ndimage import gaussian_filter
+
 # data_in ="/processed/L60s.fit"
 data_in ="/NGC7023/L60s.fit"
 
@@ -18,6 +20,8 @@ header = hdu.header
 data = hdu.data
 
 data = data[:4046,:4046]
+
+# data = gaussian_filter(data, sigma=2)
 
 z = ZScaleInterval()
 z1,z2 = z.get_limits(data)
@@ -30,7 +34,7 @@ def positions(section):
 
     mean, median, std = sigma_clipped_stats(section, sigma=3.0)
     
-    daofind = DAOStarFinder(fwhm=4.5, threshold=5.*std)
+    daofind = DAOStarFinder(fwhm=15, threshold=5.*std, roundlo=-0.5)
 
     sources = daofind(section - median)
 
