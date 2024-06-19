@@ -5,8 +5,8 @@ from astropy.visualization import ZScaleInterval
 from astropy.io import fits
 
 
-data_g ="/NGC7023/20240307/NGC7023_reduced_g'_7s.fit"
-data_r ="/NGC7023/L60s.fit"
+data_g ="/Users/vinve/OneDrive/Documenten/GitHub/irisnevel/data/processed/g60s.fit"
+data_r ="/Users/vinve/OneDrive/Documenten/GitHub/irisnevel/data/processed/ngc7023 r filter goed.fit"
 data_i ="/NGC7023/ngc7023 i filter.fit"
 
 
