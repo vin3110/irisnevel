@@ -1,0 +1,15 @@
+Coords ijksterren (x,y)
+
+   UCA 4810		IRAS 6754
+g: 2797, 1631		2561, 3125
+i: 2782, 1688		2545, 3183
+r: 2799, 1630		2562, 3125
+
+offset tussen i en g is +15, -58
+offset tussen i en r is +17, -58
+
+AREA BLOKJE ENZO
+r: (2152, 1954) - (2244, 2112)
+i: (2139,2005) - (2230, 2182)
+
+g mag = 7.50628
