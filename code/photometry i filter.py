@@ -80,7 +80,7 @@ def instrumental_mag(x_pixel, y_pixel, radius, r_in, r_out):
     # print(phot_bkgsub)
     # print(total_bkg)
 
-    im = -2.5*math.log10(phot_bkgsub)
+    im = -2.5*math.log10(phot_bkgsub) # ook deze funcite voor im van nevel
 
     return im
 
@@ -126,6 +126,41 @@ delta_m_iras = abs_mag_i_iras - IRAS_im
 delta_m = abs(delta_m_iras-delta_m_uca)
 # print(delta_m_iras)
 # print(delta_m)
+
+# in g:
+# 1708,1716 bij 2565,2252
+# maskeren: 2028,2042 bij 2097,2100
+# g naar i: -15, +58
+
+# Afgekaderd gebied
+x_start, x_end = 2139, 2230
+y_start, y_end = 2005, 2182
+sub_data = data[y_start:y_end, x_start:x_end]
+
+# Define the mask region within the sub-region
+# x_mask_start, x_mask_end = 2013 - x_start, 2082 - x_start
+# y_mask_start, y_mask_end = 2100 - y_start, 2158 - y_start
+
+# # Apply the mask (setting the specified region to zero)
+# sub_data[y_mask_start:y_mask_end, x_mask_start:x_mask_end] = 0
+
+data_kader = data[y_start:y_end, x_start:x_end]
+
+z = ZScaleInterval()
+z1,z2 = z.get_limits(data_kader)
+plt.imshow(data_kader, vmin=z1, vmax=z2, cmap='gray')
+plt.colorbar()
+plt.show()
+
+
+
+# Save the masked data to a new FITS file
+# masked_hdu = fits.PrimaryHDU(sub_data, header=header)
+# masked_hdu.writeto('masked_data.fits', overwrite=True)
+
+
+
+
 
 
 
