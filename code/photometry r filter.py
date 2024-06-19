@@ -131,7 +131,7 @@ def run(data):
 
 
 sub_data_g = run(data_g)
-sub_data_r = run(data_r)
+sub_data_r = run(data_i)
 
 sub_data = sub_data_g - sub_data_r
 
