@@ -550,19 +550,19 @@ verhouding_im_gi = im_nevel_g - im_nevel_i
 
 
 
-
+figure1 = plt.figure('g-i')
 z = ZScaleInterval()
 z1,z2 = z.get_limits(verhouding_gi)
 plt.imshow(verhouding_gi, vmin=z1, vmax=z2, cmap='gray')
 plt.colorbar()
-figure1 = plt.figure('g-i')
 
 
+figure2 = plt.figure('g-r')
 z = ZScaleInterval()
 z1,z2 = z.get_limits(verhouding_gr)
 plt.imshow(verhouding_gr, vmin=z1, vmax=z2, cmap='gray')
 plt.colorbar()
-figure2 = plt.figure('g-r')
+
 
 #plt.imshow(verhouding_im_gi, vmin=z1, vmax=z2, cmap='gray')
 
