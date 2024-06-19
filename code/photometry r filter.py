@@ -22,9 +22,13 @@ hdu = fits.open(data_in)[0]
 header = hdu.header 
 data = hdu.data
 
+# data = -2.5 * np.log10(data)
+
 z = ZScaleInterval()
 z1,z2 = z.get_limits(data)
 
+
+# Coordinaten van de ijk sterren: IRAS...6758 (2562, 3126) - UCA...4810 (2799, 1630)
 
 positions = [(2799, 1630), (2562, 3126)]
 radius = 10
@@ -55,5 +59,6 @@ star_data.pprint()
 phot_bkgsub = phot_table['aperture_sum'] - total_bkg
 # print(total_bkg)
 # print(phot_table['aperture_sum'])
+
 
 print(-2.5 * np.log10(phot_bkgsub))
