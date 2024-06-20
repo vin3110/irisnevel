@@ -552,7 +552,7 @@ verhouding_im_gi = im_nevel_g - im_nevel_i
 figure1 = plt.figure('g-i')
 z = ZScaleInterval()
 z1,z2 = z.get_limits(verhouding_gi)
-plt.imshow(verhouding_gi, vmin=z1, vmax=z2, cmap='gray')
+plt.imshow(verhouding_gi, vmin=-1, vmax=1, cmap='gray_r')
 plt.colorbar()
 
 hdu = fits.PrimaryHDU(verhouding_gi)
@@ -562,7 +562,7 @@ hdul.writeto('verhouding_gi.fits', overwrite=True)
 figure2 = plt.figure('g-r')
 z = ZScaleInterval()
 z1,z2 = z.get_limits(verhouding_gr)
-plt.imshow(verhouding_gr, vmin=z1, vmax=z2, cmap='gray')
+plt.imshow(verhouding_gr, vmin=-1, vmax=1, cmap='gray_r')
 plt.colorbar()
 
 hdu = fits.PrimaryHDU(verhouding_gr)
@@ -576,7 +576,7 @@ plt.show()
 
 # Extract values from the specified line
 x = 513
-y_start, y_end = 233, 360
+y_start, y_end = 214, 403
 
 # Extract values along the specified vertical line
 line_values = verhouding_gi[y_start:y_end, x]
@@ -585,24 +585,55 @@ line_values = verhouding_gi[y_start:y_end, x]
 plt.figure(figsize=(10, 6))
 
 # Plot the values along the vertical line
-plt.plot(range(y_start, y_end), line_values, color = 'k', label='g/i ratio in the nebula')
+plt.plot(range(y_start, y_end), line_values, color = 'w', label='g/i ratio in the nebula')
 plt.axhline(y=-0.24, color='r', linestyle='-', label='g/i ratio in HD200775')
-plt.xlabel('Y Pixel Coordinate')
-plt.ylabel('Value')
+plt.xlabel('Y Pixel Coordinate', size = 20, color = 'w')
+plt.ylabel('Value', size = 20, color = 'w')
 plt.grid(True)
-plt.legend()
-plt.savefig('gi verhouding')
+
+# Adjust the ticks on the axes for the image
+plt.xticks(fontsize=20, color='white')  # Adjust the font size for x-axis ticks
+plt.yticks(fontsize=20, color='white')  # Adjust the font size for y-axis ticks
+
+plt.gca().spines['bottom'].set_color('white')
+plt.gca().spines['top'].set_color('white') 
+plt.gca().spines['right'].set_color('white')
+plt.gca().spines['left'].set_color('white')
+
+plt.gca().tick_params(axis='x', colors='white')
+plt.gca().tick_params(axis='y', colors='white')
+plt.savefig('gi verhouding2', transparent=True, bbox_inches='tight')
 plt.show()
 
-z = ZScaleInterval()
-z1,z2 = z.get_limits(sub_data_i)
-plt.imshow(sub_data_i, vmin=z1, vmax=z2, cmap='gray')
+# z = ZScaleInterval()
+# z1,z2 = z.get_limits(sub_data_i)
+# plt.imshow(sub_data_i, vmin=z1, vmax=z2, cmap='gray')
+
+plt.imshow(verhouding_gi, vmin=-2, vmax=2, cmap='gray')
+cbar = plt.colorbar()
+
+# Set the colorbar ticks and label color to white
+cbar.ax.yaxis.set_tick_params(color='white', labelsize=15)
+cbar.ax.yaxis.set_tick_params(labelcolor='white')
+cbar.outline.set_edgecolor('white')
 
 # Mark the selected line on the image
-plt.plot([x, x], [y_start, y_end], color='red', linestyle='-', linewidth=1)
-plt.xlabel('X Pixel')
-plt.ylabel('Y Pixel')
-plt.savefig('lijn op plaatje')
+plt.plot([x, x], [y_start, y_end], color='red', linestyle='-', linewidth=1.5)
+plt.xlabel('X Pixel', size = 15, color='white')
+plt.ylabel('Y Pixel', size = 15, color='white')
+
+# Adjust the ticks on the axes for the image
+plt.xticks(fontsize=15, color='white')  # Adjust the font size for x-axis ticks
+plt.yticks(fontsize=15, color='white')  # Adjust the font size for y-axis ticks
+
+plt.gca().spines['bottom'].set_color('white')
+plt.gca().spines['top'].set_color('white') 
+plt.gca().spines['right'].set_color('white')
+plt.gca().spines['left'].set_color('white')
+
+plt.gca().tick_params(axis='x', colors='white')
+plt.gca().tick_params(axis='y', colors='white')
+plt.savefig('lijn op plaatje2', transparent=True, bbox_inches='tight')
 plt.show()
 
 # print(verhouding_gi, verhouding_gr)
