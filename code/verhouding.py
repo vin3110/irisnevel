@@ -166,12 +166,12 @@ def brightness_i(data_im):
     total_area = (x_end - x_start)*0.4310157882516833 * (y_end - y_start)*0.4310157882516833
 
     # Calculate the area of the mask region
-    mask_area = (x_mask_end - x_mask_start) * (y_mask_end - y_mask_start)
+    mask_area = (x_mask_end - x_mask_start)*0.4310157882516833 * (y_mask_end - y_mask_start)*0.4310157882516833
 
     # Calculate the area of the unmasked region
     unmasked_area = (total_area - mask_area)
 
-    surface_brightness = m_nevel + 2.5 * np.log10(unmasked_area)
+    surface_brightness = m_nevel + 2.5 * np.log10(0.4310157882516833**2)
 
     # z = ZScaleInterval()
     # z1,z2 = z.get_limits(surface_brightness)
@@ -184,7 +184,7 @@ def brightness_i(data_im):
     # masked_hdu = fits.PrimaryHDU(sub_data, header=header)
     # masked_hdu.writeto('masked_data.fits', overwrite=True)
 
-    return surface_brightness, sub_data
+    return surface_brightness, sub_data, im_nevel
 
 
 
@@ -343,12 +343,12 @@ def brightness_g(data_im):
     total_area = (x_end - x_start)*0.4310157882516833 * (y_end - y_start)*0.4310157882516833
 
     # Calculate the area of the mask region
-    mask_area = (x_mask_end - x_mask_start) * (y_mask_end - y_mask_start)
+    mask_area = (x_mask_end - x_mask_start)*0.4310157882516833 * (y_mask_end - y_mask_start)*0.4310157882516833
 
     # Calculate the area of the unmasked region
     unmasked_area = (total_area - mask_area)
 
-    surface_brightness = m_nevel + 2.5 * np.log10(unmasked_area)
+    surface_brightness = m_nevel + 2.5 * np.log10(0.4310157882516833**2)
 
     # z = ZScaleInterval()
     # z1,z2 = z.get_limits(surface_brightness)
@@ -361,7 +361,7 @@ def brightness_g(data_im):
     # masked_hdu = fits.PrimaryHDU(sub_data, header=header)
     # masked_hdu.writeto('masked_data.fits', overwrite=True)
 
-    return surface_brightness, sub_data
+    return surface_brightness, sub_data, im_nevel
 
 def brightness_r(data_im):
 
@@ -506,12 +506,12 @@ def brightness_r(data_im):
     total_area = (x_end - x_start)*0.4310157882516833 * (y_end - y_start)*0.4310157882516833
 
     # Calculate the area of the mask region
-    mask_area = (x_mask_end - x_mask_start) * (y_mask_end - y_mask_start)
+    mask_area = (x_mask_end - x_mask_start)*0.4310157882516833 * (y_mask_end - y_mask_start)*0.4310157882516833
 
     # Calculate the area of the unmasked region
     unmasked_area = (total_area - mask_area)
 
-    surface_brightness = m_nevel + 2.5 * np.log10(unmasked_area)
+    surface_brightness = m_nevel + 2.5 * np.log10(0.4310157882516833**2)
 
     # z = ZScaleInterval()
     # z1,z2 = z.get_limits(surface_brightness)
@@ -527,9 +527,9 @@ def brightness_r(data_im):
     return surface_brightness, sub_data
 
 #import fits file
-sb_i, sub_data_i = brightness_i('ngc7023 i filter.fit')
+sb_i, sub_data_i, im_nevel_i = brightness_i('ngc7023 i filter.fit')
 sb_r, sub_data_r = brightness_r('ngc7023 r filter aligned.fit')
-sb_g, sub_data_g = brightness_g('g60s aligned.fit')
+sb_g, sub_data_g, im_nevel_g = brightness_g('g60s aligned.fit')
 
 # # Crop images to the same shape
 # min_shape = np.minimum(sub_data_i.shape, sub_data_g.shape)
@@ -546,15 +546,28 @@ sb_g, sub_data_g = brightness_g('g60s aligned.fit')
 # verhouding_gi = shifted_g - sub_data_i_cropped
 verhouding_gi = sb_g - sb_i
 verhouding_gr = sb_g - sb_r
+verhouding_im_gi = im_nevel_g - im_nevel_i
 
-plt.imshow(verhouding_gi, cmap='gray')
+
+
+figure1 = plt.figure('g-i')
+z = ZScaleInterval()
+z1,z2 = z.get_limits(verhouding_gi)
+plt.imshow(verhouding_gi, vmin=z1, vmax=z2, cmap='gray')
 plt.colorbar()
-plt.show()
 
-plt.imshow(verhouding_gr, cmap='gray')
+
+figure2 = plt.figure('g-r')
+z = ZScaleInterval()
+z1,z2 = z.get_limits(verhouding_gr)
+plt.imshow(verhouding_gr, vmin=z1, vmax=z2, cmap='gray')
 plt.colorbar()
-plt.show()
 
+
+#plt.imshow(verhouding_im_gi, vmin=z1, vmax=z2, cmap='gray')
+
+
+plt.show()
 
 
 # print(verhouding_gi, verhouding_gr)
