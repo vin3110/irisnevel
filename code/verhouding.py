@@ -31,7 +31,7 @@ def brightness_i(data_im):
 
     data = data[:4046,:4046]
 
-    print(header)
+    #print(header)
 
     z = ZScaleInterval()
     z1,z2 = z.get_limits(data)
@@ -155,7 +155,7 @@ def brightness_i(data_im):
     z1,z2 = z.get_limits(sub_data)
     plt.imshow(sub_data, vmin=z1, vmax=z2, cmap='gray')
     plt.colorbar()
-    plt.show()
+    #plt.show()
 
     nevel_zonder_achtergrond = sub_data - achtergrond
     im_nevel = -2.5 * np.log10(nevel_zonder_achtergrond) 
@@ -177,7 +177,7 @@ def brightness_i(data_im):
     # z1,z2 = z.get_limits(surface_brightness)
     plt.imshow(surface_brightness, cmap='gray')
     plt.colorbar()
-    plt.show()
+    #plt.show()
 
 
     # Save the masked data to a new FITS file
@@ -196,7 +196,7 @@ def brightness_g(data_im):
 
     data = data[:4046,:4046]
 
-    print(header)
+    #print(header)
 
     z = ZScaleInterval()
     z1,z2 = z.get_limits(data)
@@ -332,7 +332,7 @@ def brightness_g(data_im):
     z1,z2 = z.get_limits(sub_data)
     plt.imshow(sub_data, vmin=z1, vmax=z2, cmap='gray')
     plt.colorbar()
-    plt.show()
+    #plt.show()
 
     nevel_zonder_achtergrond = sub_data - achtergrond
     im_nevel = -2.5 * np.log10(nevel_zonder_achtergrond) 
@@ -354,7 +354,7 @@ def brightness_g(data_im):
     # z1,z2 = z.get_limits(surface_brightness)
     plt.imshow(surface_brightness, cmap='gray')
     plt.colorbar()
-    plt.show()
+    #plt.show()
 
 
     # Save the masked data to a new FITS file
@@ -371,7 +371,6 @@ def brightness_r(data_im):
 
     data = data[:4046,:4046]
 
-    print(header)
 
     z = ZScaleInterval()
     z1,z2 = z.get_limits(data)
@@ -495,7 +494,7 @@ def brightness_r(data_im):
     z1,z2 = z.get_limits(sub_data)
     plt.imshow(sub_data, vmin=z1, vmax=z2, cmap='gray')
     plt.colorbar()
-    plt.show()
+    #plt.show()
 
     nevel_zonder_achtergrond = sub_data - achtergrond
     im_nevel = -2.5 * np.log10(nevel_zonder_achtergrond) 
@@ -517,7 +516,7 @@ def brightness_r(data_im):
     # z1,z2 = z.get_limits(surface_brightness)
     plt.imshow(surface_brightness, cmap='gray')
     plt.colorbar()
-    plt.show()
+    #plt.show()
 
 
     # Save the masked data to a new FITS file
@@ -556,6 +555,9 @@ z1,z2 = z.get_limits(verhouding_gi)
 plt.imshow(verhouding_gi, vmin=z1, vmax=z2, cmap='gray')
 plt.colorbar()
 
+hdu = fits.PrimaryHDU(verhouding_gi)
+hdul = fits.HDUList([hdu])
+hdul.writeto('verhouding_gi.fits', overwrite=True)
 
 figure2 = plt.figure('g-r')
 z = ZScaleInterval()
@@ -563,12 +565,45 @@ z1,z2 = z.get_limits(verhouding_gr)
 plt.imshow(verhouding_gr, vmin=z1, vmax=z2, cmap='gray')
 plt.colorbar()
 
+hdu = fits.PrimaryHDU(verhouding_gr)
+hdul = fits.HDUList([hdu])
+hdul.writeto('verhouding_gr.fits', overwrite=True)
 
 #plt.imshow(verhouding_im_gi, vmin=z1, vmax=z2, cmap='gray')
 
 
 plt.show()
 
+# Extract values from the specified line
+x = 513
+y_start, y_end = 233, 360
+
+# Extract values along the specified vertical line
+line_values = verhouding_gi[y_start:y_end, x]
+
+# Create a new figure for the plot
+plt.figure(figsize=(10, 6))
+
+# Plot the values along the vertical line
+plt.plot(range(y_start, y_end), line_values, color = 'k', label='g/i ratio in the nebula')
+plt.axhline(y=-0.24, color='r', linestyle='-', label='g/i ratio in HD200775')
+plt.xlabel('Y Pixel Coordinate')
+plt.ylabel('Value')
+plt.grid(True)
+plt.legend()
+plt.savefig('gi verhouding')
+plt.show()
+
+z = ZScaleInterval()
+z1,z2 = z.get_limits(sub_data_i)
+plt.imshow(sub_data_i, vmin=z1, vmax=z2, cmap='gray')
+
+# Mark the selected line on the image
+plt.plot([x, x], [y_start, y_end], color='red', linestyle='-', linewidth=1)
+plt.xlabel('X Pixel')
+plt.ylabel('Y Pixel')
+plt.savefig('lijn op plaatje')
+plt.show()
 
 # print(verhouding_gi, verhouding_gr)
 
