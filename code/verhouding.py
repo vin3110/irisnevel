@@ -81,8 +81,9 @@ def brightness_i(data_im):
         # print(total_bkg)
 
         im = -2.5*math.log10(phot_bkgsub) # ook deze funcite voor im van nevel
+        err_zeropoint = 100 * (np.sqrt((phot_table['aperture_sum'] - total_bkg) + aperture.area * (bkg_mean + 4.2 + 100))) / total_bkg
 
-        return im, bkg_mean
+        return im, bkg_mean, err_zeropoint
 
 
     # UCAC4 791-034810
@@ -116,8 +117,8 @@ def brightness_i(data_im):
 
     # def ratios(magI, magR, magG):
 
-    UCA_im, achtergrond_uca = instrumental_mag(x_pixel_uca, y_pixel_uca, r_uca, r_in_uca, r_out_uca)
-    IRAS_im, achtergrond_iras = instrumental_mag(x_pixel_iras, y_pixel_iras, r_iras, r_in_iras, r_out_iras)
+    UCA_im, achtergrond_uca, err_zpt_UCA = instrumental_mag(x_pixel_uca, y_pixel_uca, r_uca, r_in_uca, r_out_uca)
+    IRAS_im, achtergrond_iras, err_zpt_IRAS = instrumental_mag(x_pixel_iras, y_pixel_iras, r_iras, r_in_iras, r_out_iras)
     print(UCA_im)
     print(IRAS_im)
 
@@ -179,12 +180,20 @@ def brightness_i(data_im):
     plt.colorbar()
     #plt.show()
 
+    print(err_zpt_UCA)
+    print(err_zpt_IRAS)
+    err_zpt = (err_zpt_UCA + err_zpt_IRAS) / 2
+    print(err_zpt)
+    lijn = nevel_zonder_achtergrond[214:403, 513]
+    err_mag = np.sqrt(((-2.5 / np.log(10)) * (1 / np.sqrt(lijn))) ** 2 + err_zpt**2)
+
+    print(err_mag)
 
     # Save the masked data to a new FITS file
     # masked_hdu = fits.PrimaryHDU(sub_data, header=header)
     # masked_hdu.writeto('masked_data.fits', overwrite=True)
 
-    return surface_brightness, sub_data, im_nevel
+    return surface_brightness, sub_data, im_nevel, err_mag
 
 
 
@@ -247,7 +256,9 @@ def brightness_g(data_im):
 
         im = -2.5*math.log10(phot_bkgsub) # ook deze funcite voor im van nevel
 
-        return im, bkg_mean
+        err_zeropoint = 100 * (np.sqrt((phot_table['aperture_sum'] - total_bkg) + aperture.area * (bkg_mean + 4.2 + 100))) / total_bkg
+
+        return im, bkg_mean, err_zeropoint
 
 
     # UCAC4 791-034810
@@ -285,8 +296,8 @@ def brightness_g(data_im):
 
     # def ratios(magI, magR, magG):
 
-    UCA_im, achtergrond_uca = instrumental_mag(x_pixel_uca, y_pixel_uca, r_uca, r_in_uca, r_out_uca)
-    IRAS_im, achtergrond_iras = instrumental_mag(x_pixel_iras, y_pixel_iras, r_iras, r_in_iras, r_out_iras)
+    UCA_im, achtergrond_uca, err_zpt_UCA = instrumental_mag(x_pixel_uca, y_pixel_uca, r_uca, r_in_uca, r_out_uca)
+    IRAS_im, achtergrond_iras, err_zpt_IRAS = instrumental_mag(x_pixel_iras, y_pixel_iras, r_iras, r_in_iras, r_out_iras)
     print(UCA_im)
     print(IRAS_im)
 
@@ -356,12 +367,15 @@ def brightness_g(data_im):
     plt.colorbar()
     #plt.show()
 
+    err_zpt = (err_zpt_UCA + err_zpt_IRAS) / 2
+    lijn = nevel_zonder_achtergrond[214:403, 513]
+    err_mag = np.sqrt(((-2.5 / np.log(10)) * (1 / np.sqrt(lijn))) ** 2 + err_zpt**2)
 
     # Save the masked data to a new FITS file
     # masked_hdu = fits.PrimaryHDU(sub_data, header=header)
     # masked_hdu.writeto('masked_data.fits', overwrite=True)
 
-    return surface_brightness, sub_data, im_nevel
+    return surface_brightness, sub_data, im_nevel, err_mag
 
 def brightness_r(data_im):
 
@@ -420,8 +434,9 @@ def brightness_r(data_im):
         # print(total_bkg)
 
         im = -2.5*math.log10(phot_bkgsub) # ook deze funcite voor im van nevel
+        
 
-        return im, bkg_mean
+        return im, bkg_mean,
 
 
     # UCAC4 791-034810
@@ -526,27 +541,41 @@ def brightness_r(data_im):
     return surface_brightness, sub_data
 
 #import fits file
-sb_i, sub_data_i, im_nevel_i = brightness_i('ngc7023 i filter.fit')
-sb_r, sub_data_r = brightness_r('ngc7023 r filter aligned.fit')
-sb_g, sub_data_g, im_nevel_g = brightness_g('g60s aligned.fit')
+sb_i, sub_data_i, im_nevel_i, err_mag_i = brightness_i("/Users/ilias/OneDrive/Documenten/GitHub/irisnevel/data/processed/ngc7023 i filter.fit")
+# sb_r, sub_data_r = brightness_r("/Users/ilias/OneDrive/Documenten/GitHub/irisnevel/data/processed/ngc7023 r filter aligned.fit")
+sb_g, sub_data_g, im_nevel_g, err_mag_g = brightness_g('/Users/ilias/OneDrive/Documenten/GitHub/irisnevel/data/processed/g60s aligned.fit')
 
-# # Crop images to the same shape
-# min_shape = np.minimum(sub_data_i.shape, sub_data_g.shape)
-# sub_data_i_cropped = sub_data_i[:min_shape[0], :min_shape[1]]
-# sub_data_g_cropped = sub_data_g[:min_shape[0], :min_shape[1]]
+print(err_mag_i)
+print(err_mag_g)
 
-# # Align the images using cross-correlation
-# shift, error, diffphase = phase_cross_correlation(sub_data_i_cropped, sub_data_g_cropped, upsample_factor=100)
 
-# # Apply the shift to the g band image
-# shifted_g = np.fft.ifftn(fourier_shift(np.fft.fftn(sub_data_g_cropped), shift)).real
+sb_i_lijn = sb_i[214:403, 513]
+sb_g_lijn = sb_g[214:403, 513]
+
+err_mag = np.sqrt((err_mag_g)**2 + (err_mag_i)**2)
+# err_mag = np.abs(sb_g_lijn/sb_i_lijn) * np.sqrt((err_mag_g / sb_g_lijn)**2 + (err_mag_i / sb_i_lijn)**2)
+print(err_mag)
+
+# print(sb_i_lijn)
+# print(sb_g_lijn)
+
+# Crop images to the same shape
+min_shape = np.minimum(sub_data_i.shape, sub_data_g.shape)
+sub_data_i_cropped = sub_data_i[:min_shape[0], :min_shape[1]]
+sub_data_g_cropped = sub_data_g[:min_shape[0], :min_shape[1]]
+
+# Align the images using cross-correlation
+shift, error, diffphase = phase_cross_correlation(sub_data_i_cropped, sub_data_g_cropped, upsample_factor=100)
+
+# Apply the shift to the g band image
+shifted_g = np.fft.ifftn(fourier_shift(np.fft.fftn(sub_data_g_cropped), shift)).real
 
 # Compute the ratio and plot
 # verhouding_gi = shifted_g - sub_data_i_cropped
-verhouding_gi = sb_g - sb_i
-verhouding_gr = sb_g - sb_r
-verhouding_im_gi = im_nevel_g - im_nevel_i
 
+verhouding_gi = sb_g - sb_i
+# verhouding_gr = sb_g - sb_r
+verhouding_im_gi = im_nevel_g - im_nevel_i
 
 
 figure1 = plt.figure('g-i')
@@ -559,20 +588,20 @@ hdu = fits.PrimaryHDU(verhouding_gi)
 hdul = fits.HDUList([hdu])
 hdul.writeto('verhouding_gi.fits', overwrite=True)
 
-figure2 = plt.figure('g-r')
-z = ZScaleInterval()
-z1,z2 = z.get_limits(verhouding_gr)
-plt.imshow(verhouding_gr, vmin=-1, vmax=1, cmap='gray_r')
-plt.colorbar()
+# figure2 = plt.figure('g-r')
+# z = ZScaleInterval()
+# z1,z2 = z.get_limits(verhouding_gr)
+# plt.imshow(verhouding_gr, vmin=-1, vmax=1, cmap='gray_r')
+# plt.colorbar()
 
-hdu = fits.PrimaryHDU(verhouding_gr)
-hdul = fits.HDUList([hdu])
-hdul.writeto('verhouding_gr.fits', overwrite=True)
+# hdu = fits.PrimaryHDU(verhouding_gr)
+# hdul = fits.HDUList([hdu])
+# hdul.writeto('verhouding_gr.fits', overwrite=True)
 
 #plt.imshow(verhouding_im_gi, vmin=z1, vmax=z2, cmap='gray')
 
 
-plt.show()
+# plt.show()
 
 # Extract values from the specified line
 x = 513
@@ -584,14 +613,16 @@ line_values = verhouding_gi[y_start:y_end, x]
 # Create a new figure for the plot
 plt.figure(figsize=(10, 6))
 
-# Plot the values along the vertical line
-plt.plot(range(y_start, y_end), line_values, color = 'w', label='g/i ratio in the nebula')
+# # Plot the values along the vertical line
+# plt.plot(range(y_start, y_end), line_values, color = 'w', label='g/i ratio in the nebula', linestyle = 'o')
+plt.errorbar(range(y_start, y_end), line_values, yerr=err_mag, ecolor='lightgrey', fmt='o', color='w', label='g/i ratio in the nebula')
 plt.axhline(y=-0.24, color='r', linestyle='-', label='g/i ratio in HD200775')
 plt.xlabel('Y Pixel Coordinate', size = 20, color = 'w')
-plt.ylabel('Value', size = 20, color = 'w')
+plt.ylabel("g'- i'", size = 20, color = 'w')
+plt.ylim(-3,2)
 plt.grid(True)
 
-# Adjust the ticks on the axes for the image
+# # Adjust the ticks on the axes for the image
 plt.xticks(fontsize=20, color='white')  # Adjust the font size for x-axis ticks
 plt.yticks(fontsize=20, color='white')  # Adjust the font size for y-axis ticks
 
@@ -605,40 +636,40 @@ plt.gca().tick_params(axis='y', colors='white')
 plt.savefig('gi verhouding2', transparent=True, bbox_inches='tight')
 plt.show()
 
-# z = ZScaleInterval()
-# z1,z2 = z.get_limits(sub_data_i)
-# plt.imshow(sub_data_i, vmin=z1, vmax=z2, cmap='gray')
+# # z = ZScaleInterval()
+# # z1,z2 = z.get_limits(sub_data_i)
+# # plt.imshow(sub_data_i, vmin=z1, vmax=z2, cmap='gray')
 
-plt.imshow(verhouding_gi, vmin=-2, vmax=2, cmap='gray')
-cbar = plt.colorbar()
+# plt.imshow(verhouding_gi, vmin=-2, vmax=2, cmap='gray')
+# cbar = plt.colorbar()
 
-# Set the colorbar ticks and label color to white
-cbar.ax.yaxis.set_tick_params(color='white', labelsize=15)
-cbar.ax.yaxis.set_tick_params(labelcolor='white')
-cbar.outline.set_edgecolor('white')
+# # Set the colorbar ticks and label color to white
+# cbar.ax.yaxis.set_tick_params(color='white', labelsize=15)
+# cbar.ax.yaxis.set_tick_params(labelcolor='white')
+# cbar.outline.set_edgecolor('white')
 
-# Mark the selected line on the image
-plt.plot([x, x], [y_start, y_end], color='red', linestyle='-', linewidth=1.5)
-plt.xlabel('X Pixel', size = 15, color='white')
-plt.ylabel('Y Pixel', size = 15, color='white')
+# # Mark the selected line on the image
+# plt.plot([x, x], [y_start, y_end], color='red', linestyle='-', linewidth=1.5)
+# plt.xlabel('X Pixel', size = 15, color='white')
+# plt.ylabel('Y Pixel', size = 15, color='white')
 
-# Adjust the ticks on the axes for the image
-plt.xticks(fontsize=15, color='white')  # Adjust the font size for x-axis ticks
-plt.yticks(fontsize=15, color='white')  # Adjust the font size for y-axis ticks
+# # Adjust the ticks on the axes for the image
+# plt.xticks(fontsize=15, color='white')  # Adjust the font size for x-axis ticks
+# plt.yticks(fontsize=15, color='white')  # Adjust the font size for y-axis ticks
 
-plt.gca().spines['bottom'].set_color('white')
-plt.gca().spines['top'].set_color('white') 
-plt.gca().spines['right'].set_color('white')
-plt.gca().spines['left'].set_color('white')
+# plt.gca().spines['bottom'].set_color('white')
+# plt.gca().spines['top'].set_color('white') 
+# plt.gca().spines['right'].set_color('white')
+# plt.gca().spines['left'].set_color('white')
 
-plt.gca().tick_params(axis='x', colors='white')
-plt.gca().tick_params(axis='y', colors='white')
-plt.savefig('lijn op plaatje2', transparent=True, bbox_inches='tight')
-plt.show()
+# plt.gca().tick_params(axis='x', colors='white')
+# plt.gca().tick_params(axis='y', colors='white')
+# plt.savefig('lijn op plaatje2', transparent=True, bbox_inches='tight')
+# # plt.show()
 
-# print(verhouding_gi, verhouding_gr)
+# # print(verhouding_gi, verhouding_gr)
 
-# g naar r +2 -1/+1
+# # g naar r +2 -1/+1
 
 
 
