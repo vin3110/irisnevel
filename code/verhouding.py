@@ -163,15 +163,15 @@ def brightness_i(data_im):
 
 
     # Calculate the total area of the sub-region
-    total_area = (x_end - x_start)*0.4310157882516833 * (y_end - y_start)*0.4310157882516833
+    total_area = (x_end - x_start) * (y_end - y_start)
 
     # Calculate the area of the mask region
-    mask_area = (x_mask_end - x_mask_start)*0.4310157882516833 * (y_mask_end - y_mask_start)*0.4310157882516833
+    mask_area = (x_mask_end - x_mask_start) * (y_mask_end - y_mask_start)
 
     # Calculate the area of the unmasked region
     unmasked_area = (total_area - mask_area)
 
-    surface_brightness = m_nevel + 2.5 * np.log10(0.4310157882516833**2)
+    surface_brightness = m_nevel + 2.5 * np.log10(1**2)
 
     # z = ZScaleInterval()
     # z1,z2 = z.get_limits(surface_brightness)
@@ -340,15 +340,15 @@ def brightness_g(data_im):
 
 
     # Calculate the total area of the sub-region
-    total_area = (x_end - x_start)*0.4310157882516833 * (y_end - y_start)*0.4310157882516833
+    total_area = (x_end - x_start) * (y_end - y_start)
 
     # Calculate the area of the mask region
-    mask_area = (x_mask_end - x_mask_start)*0.4310157882516833 * (y_mask_end - y_mask_start)*0.4310157882516833
+    mask_area = (x_mask_end - x_mask_start) * (y_mask_end - y_mask_start)
 
     # Calculate the area of the unmasked region
     unmasked_area = (total_area - mask_area)
 
-    surface_brightness = m_nevel + 2.5 * np.log10(0.4310157882516833**2)
+    surface_brightness = m_nevel + 2.5 * np.log10(1**2)
 
     # z = ZScaleInterval()
     # z1,z2 = z.get_limits(surface_brightness)
@@ -502,15 +502,15 @@ def brightness_r(data_im):
 
 
     # Calculate the total area of the sub-region
-    total_area = (x_end - x_start)*0.4310157882516833 * (y_end - y_start)*0.4310157882516833
+    total_area = (x_end - x_start) * (y_end - y_start)
 
     # Calculate the area of the mask region
-    mask_area = (x_mask_end - x_mask_start)*0.4310157882516833 * (y_mask_end - y_mask_start)*0.4310157882516833
+    mask_area = (x_mask_end - x_mask_start) * (y_mask_end - y_mask_start)
 
     # Calculate the area of the unmasked region
     unmasked_area = (total_area - mask_area)
 
-    surface_brightness = m_nevel + 2.5 * np.log10(0.4310157882516833**2)
+    surface_brightness = m_nevel + 2.5 * np.log10(1**2)
 
     # z = ZScaleInterval()
     # z1,z2 = z.get_limits(surface_brightness)
